@@ -43,6 +43,8 @@ public class AwardDistributor {
 		
 		int[][] rankingMatrix = generateRankingMatrix(awards, noms);
 		
+		HashMap<Integer, Integer> assignments = AssignmentMaker.findOptimalAssignments(rankingMatrix);
+		
 		return null;
 	}
 
@@ -54,7 +56,7 @@ public class AwardDistributor {
 	 * 
 	 * @return A 2D array that represents each nominee's ranking for each award
 	 */
-	private int[][] generateRankingMatrix(Award[] awards, ArrayList<String> noms) {
+	int[][] generateRankingMatrix(Award[] awards, ArrayList<String> noms) {
 		int numNoms = noms.size();
 		int[][] result = new int[numNoms][numNoms];
 		
@@ -65,7 +67,8 @@ public class AwardDistributor {
 			int awardIndex = award.getIndex();
 			for (String nom : award.getNoms()) {
 				int nomIndex = noms.indexOf(nom);
-				result[awardIndex][nomIndex] = nomIndex + 1;
+				int ranking = award.getRanking(nom);
+				result[awardIndex][nomIndex] = ranking;
 			}
 		}
 		
@@ -76,5 +79,19 @@ public class AwardDistributor {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Prints a 2D Array to the console (helpful for testing code).
+	 * 
+	 * @param arr 2D Array to be printed
+	 */
+	static void print2DArray(int[][] arr) {
+		for (int[] row : arr) {
+			for (int num : row) {
+				System.out.print(num + "\t");
+			}
+			System.out.println("");
+		}
 	}
 }

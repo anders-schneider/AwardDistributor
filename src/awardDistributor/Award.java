@@ -10,12 +10,11 @@ package awardDistributor;
 
 public class Award {
 	
+	private static int numAwards = 0; // total number of awards created
+	
 	private String name;
 	private int index;
 	private String[] noms;
-	
-
-	private static int numAwards = 0;
 	
 	/**
 	 * Constructor of the Award class, takes a String representing the name
@@ -39,6 +38,15 @@ public class Award {
 	}
 	
 	/**
+	 * Sets the <code>noms</code> instance variable for this Award.
+	 * 
+	 * @param noms An ordered array of the nominees for this award
+	 */
+	public void setNoms(String[] noms) {
+		this.noms = noms;
+	}
+	
+	/**
 	 * Returns the array of nominees for this Award.
 	 * 
 	 * @return The array of nominees for this Award
@@ -48,13 +56,27 @@ public class Award {
 	}
 	
 	/**
+	 * Returns the ranking of the nominee for this particular award
+	 * (1 is the best possible ranking).
+	 * 
+	 * @param nom A nominee for this Award
+	 * @return The ranking of the specified nominee for this Award
+	 */
+	public int getRanking(String nominee) {
+		for (int i = 0; i < noms.length; i++) {
+			if (noms[i].equals(nominee)) return i + 1;
+		}
+		throw new IllegalArgumentException(nominee + " does not appear in the list of nominees for this Award");
+	}
+	
+	/**
 	 * Returns the hashcode corresponding to this Award.
 	 * 
 	 * @return The hashcode corresponding to this Award.
 	 */
 	@Override
 	public int hashCode() {
-		return name.hashCode();
+		return name.hashCode() + index;
 	}
 
 	/**
@@ -70,6 +92,6 @@ public class Award {
 			return false;
 		}
 		Award other = (Award) o;
-		return this.name.equals(other.name);
+		return this.name.equals(other.name) && this.index == other.getIndex();
 	}
 }
