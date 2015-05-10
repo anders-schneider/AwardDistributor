@@ -1,5 +1,6 @@
 package awardDistributor;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -15,7 +16,7 @@ import java.util.HashMap;
  *
  */
 public class AssignmentMaker {
-
+	
 	/**
 	 * Returns a HashMap that corresponds to the optimal pairings of
 	 * award and nominee. The returned HashMap has the format
@@ -77,11 +78,55 @@ public class AssignmentMaker {
 	static int[][] findMaximumMatching(int[][] rankingMatrix) {
 		int numNoms = rankingMatrix.length;
 		
+		int[][] adjMatrix = generateAdjacencyMatrix(rankingMatrix);		
 		int[][] flowNetwork = new int[2 * numNoms + 2][2 * numNoms + 2];
-		int[][] adjMatrix = generateAdjacencyMatrix(rankingMatrix);
-		int[][] residualGraph = adjMatrix.clone();
+		int[][] resGraph = adjMatrix.clone();
 		
-		return null;
+		Path path = new Path(adjMatrix);
+		
+		while (true) {
+			
+			// Try to move forward
+			if(path.moveForward()) {
+				
+				// If successful, check if the path reaches the sink
+				if (path.status == Path.Status.COMPLETE_PATH) {	
+					updateGraphs(flowNetwork, resGraph, path);
+					path = new Path(adjMatrix); // begin a new path
+				}
+				continue;
+			}
+			
+			// Can't move forward - check if we're stuck at the source
+			if (path.status == Path.Status.AT_SOURCE) {
+				break; // (no more augmenting paths)
+			}
+			
+			// Otherwise, if the path is at the nominee level, try to move backwards
+			if (path.status == Path.Status.AT_NOMINEES) {
+				if (path.moveBackward()) {
+					continue;
+				}
+			}
+			
+			// If all of the above fails, back up to previous vertex
+			path.backtrack();
+		}
+		
+		return flowNetwork;
+	}
+	
+	/**
+	 * Given a complete path from source to sink, this method updates the
+	 * flow network and the residual graph to reflect the addition of this
+	 * augmenting path.
+	 * 
+	 * @param flowNetwork The 2D array representing the flow network
+	 * @param resGraph The 2D array representing the residual graph
+	 * @param path An augmenting path
+	 */
+	static void updateGraphs(int[][] flowNetwork, int[][] resGraph, Path path) {
+		//TODO Implement the updateGraphs method
 	}
 	
 	/**

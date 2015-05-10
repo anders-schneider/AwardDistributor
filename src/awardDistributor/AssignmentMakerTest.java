@@ -15,6 +15,11 @@ public class AssignmentMakerTest {
 	public void testFindOptimalAssignments() {
 		fail("Not yet implemented");
 	}
+	
+	@Test
+	public void testFindMaximumMatching() {
+		fail("Not yet implemented");
+	}
 
 	@Test
 	public void testRowSubtractMin() {
@@ -97,5 +102,11 @@ public class AssignmentMakerTest {
 							 {0, 0, 0, 0, 0, 0, 0, 0}};
 		
 		assertArrayEquals(AssignmentMaker.generateAdjacencyMatrix(rankingMatrix2), expected2);
+	}
+	
+	@Test
+	public void testUpdateGraphs() {
+		//TODO Test updateGraphs method
+		fail("Not yet implemented");
 	}
 }
