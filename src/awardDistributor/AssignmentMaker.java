@@ -2,6 +2,7 @@ package awardDistributor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * The AssignmentMaker class bears the brunt of the processing in this
@@ -27,17 +28,21 @@ public class AssignmentMaker {
 	 * @return HashMap with the key Award index and the value nominee index
 	 */
 	public static HashMap<Integer, Integer> findOptimalAssignments(int[][] rankingMatrix) {
-		boolean isPerfectMatching = false;
+		int numNoms = rankingMatrix.length;
 		
-		while(!isPerfectMatching) {
+		while(true) {
 			
 			rowSubtractMin(rankingMatrix); // subtract minimum from each row
 			colSubtractMin(rankingMatrix); // subtract minimum from each column
 			
 			int[][] flowNetwork = findMaximumMatching(rankingMatrix);
+			
+			if (isPerfectMatching(flowNetwork, numNoms)) {
+				return generateAssignments(flowNetwork, numNoms);
+			}
+			
+			adjustWeights(rankingMatrix, flowNetwork);
 		}
-		
-		return null;
 	}
 	
 	/**
@@ -82,7 +87,7 @@ public class AssignmentMaker {
 		int[][] flowNetwork = new int[2 * numNoms + 2][2 * numNoms + 2];
 		int[][] resGraph = adjMatrix.clone();
 		
-		Path path = new Path(adjMatrix);
+		Path path = new Path(resGraph, numNoms);
 		
 		while (true) {
 			
@@ -92,7 +97,7 @@ public class AssignmentMaker {
 				// If successful, check if the path reaches the sink
 				if (path.status == Path.Status.COMPLETE_PATH) {	
 					updateGraphs(flowNetwork, resGraph, path);
-					path = new Path(adjMatrix); // begin a new path
+					path = new Path(adjMatrix, numNoms); // begin a new path
 				}
 				continue;
 			}
@@ -126,7 +131,18 @@ public class AssignmentMaker {
 	 * @param path An augmenting path
 	 */
 	static void updateGraphs(int[][] flowNetwork, int[][] resGraph, Path path) {
-		//TODO Implement the updateGraphs method
+		while (path.hasNextEdge()) {
+			int v1 = path.firstIndex(); // This edge comes out of v1
+			int v2 = path.secondIndex(); // ...and goes into v2
+			
+			// Add this edge to the flow network (or remove its back-edge counterpart)
+			if (flowNetwork[v2][v1] == 1) flowNetwork[v2][v1] = 0;
+			else flowNetwork[v1][v2] = 1;
+			
+			// Remove this edge from the residual graph and add a back-edge in its place
+			resGraph[v1][v2] = 0;
+			resGraph[v2][v1] = 1;
+		}
 	}
 	
 	/**
@@ -161,6 +177,68 @@ public class AssignmentMaker {
 		}
 		
 		return adjMatrix;
+	}
+	
+	/**
+	 * Returns <code>true</code> if the input flow network represents
+	 * a perfect matching, i.e. a matching in which every award is paired
+	 * with a nominee.
+	 * 
+	 * @param flowNetwork A 2D array representing a maximum-matching flow network
+	 * @return A boolean indicating if the matching is perfect
+	 */
+	static boolean isPerfectMatching(int[][] flowNetwork, int numNoms) {
+		
+		// Look through each award vertex's row in the flow network
+		for (int v1 = 1; v1 < numNoms + 1; v1++) {
+			boolean hasAssignment = false;
+			for (int v2 = numNoms + 1; v2 < 2 * numNoms + 1; v2++) {
+				if (flowNetwork[v1][v2] == 1) {
+					hasAssignment = true;
+					break;
+				}
+			}
+			// If v1 has no edges to any nominees: not a perfect matching
+			if (!hasAssignment) return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Returns a HashMap that maps awards (keys) to nominees (values) based
+	 * on the input flow network, which must represent a perfect matching
+	 * 
+	 * @param flowNetwork A 2D array representing a perfect-matching flow network
+	 * @return A HashMap of award:nominee pairings
+	 */
+	static HashMap<Integer, Integer> generateAssignments(int[][] flowNetwork, int numNoms) {
+		HashMap<Integer, Integer> result = new HashMap<Integer, Integer>();
+		
+		// For each award, look for its corresponding nominee
+		for (int v1 = 1; v1 < numNoms + 1; v1++) {
+			for (int v2 = numNoms + 1; v2 < 2 * numNoms + 1; v2++) {
+				if (flowNetwork[v1][v2] == 1) {
+					// Add the pair to the result HashMap
+					result.put(v1, v2);
+					break;
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Adjusts the weights of the ranking matrix given the minimal cover
+	 * represented by the flow network, which was returned after not finding
+	 * a perfect matching.
+	 * 
+	 * @param rankingMatrix The ranking matrix to be adjusted
+	 * @param flowNetwork The flow network that does not represent a perfect matching
+	 */
+	static void adjustWeights(int[][] rankingMatrix, int[][] flowNetwork) {
+		HashSet<Integer> minCover = findMinCover(flowNetwork);
 	}
 	
 	/**

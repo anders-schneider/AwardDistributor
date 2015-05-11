@@ -13,12 +13,44 @@ public class AssignmentMakerTest {
 
 	@Test
 	public void testFindOptimalAssignments() {
+		//TODO Test findOptimalAssignments method
 		fail("Not yet implemented");
 	}
 	
 	@Test
 	public void testFindMaximumMatching() {
-		fail("Not yet implemented");
+
+		// First test: direct matching (1 to 1, 2 to 2, 3 to 3)
+		int[][] rankingMatrix1 = {{0, 1, 3},
+								  {1, 0, 2},
+								  {1, 1, 0}};
+		
+		int[][] expectedFN1 = {{0, 1, 1, 1, 0, 0, 0, 0},
+		 	   				   {0, 0, 0, 0, 1, 0, 0, 0},
+		 	   				   {0, 0, 0, 0, 0, 1, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 1, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 1},
+							   {0, 0, 0, 0, 0, 0, 0, 1},
+							   {0, 0, 0, 0, 0, 0, 0, 1},
+							   {0, 0, 0, 0, 0, 0, 0, 0}};
+		
+		assertArrayEquals(expectedFN1, AssignmentMaker.findMaximumMatching(rankingMatrix1));
+		
+		// Second test: imperfect matching (1 to 1, 2 to 2)
+		int[][] rankingMatrix2 = {{0, 1, 3},
+								  {0, 0, 0},
+								  {0, 1, 2}};
+		
+		int[][] expectedFN2 = {{0, 1, 1, 0, 0, 0, 0, 0},
+			 				   {0, 0, 0, 0, 1, 0, 0, 0},
+			 				   {0, 0, 0, 0, 0, 1, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 1},
+							   {0, 0, 0, 0, 0, 0, 0, 1},
+							   {0, 0, 0, 0, 0, 0, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 0}};
+
+		assertArrayEquals(expectedFN2, AssignmentMaker.findMaximumMatching(rankingMatrix2));
 	}
 
 	@Test
@@ -106,7 +138,104 @@ public class AssignmentMakerTest {
 	
 	@Test
 	public void testUpdateGraphs() {
-		//TODO Test updateGraphs method
+		int[][] flowNetwork = {{0, 0, 0, 0, 0, 0, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 0},
+							   {0, 0, 0, 0, 0, 0, 0, 0}};
+		
+		int[][] resGraph = {{0, 1, 1, 0, 0, 0, 0, 0},
+							{0, 0, 0, 0, 1, 0, 0, 0},
+							{0, 0, 0, 0, 0, 1, 0, 0},
+							{0, 0, 0, 0, 0, 0, 1, 0},
+							{0, 0, 0, 0, 0, 0, 0, 1},
+							{0, 0, 0, 1, 0, 0, 0, 0},
+							{0, 0, 0, 0, 0, 0, 0, 1},
+							{0, 0, 0, 0, 0, 0, 0, 0}};
+		
+		int numNoms = 3;
+		
+		// First test: path goes source to 1 to 4 to sink
+		Path p1 = new Path(resGraph, numNoms);
+		
+		p1.moveForward();
+		p1.moveForward();
+		p1.moveForward();
+		
+		assertEquals(Path.Status.COMPLETE_PATH, p1.status);
+		
+		AssignmentMaker.updateGraphs(flowNetwork, resGraph, p1);
+		
+		int[][] expectedFlowNetwork1 = {{0, 1, 0, 0, 0, 0, 0, 0},
+								 	   	{0, 0, 0, 0, 1, 0, 0, 0},
+ 									    {0, 0, 0, 0, 0, 0, 0, 0},
+									    {0, 0, 0, 0, 0, 0, 0, 0},
+									    {0, 0, 0, 0, 0, 0, 0, 1},
+									    {0, 0, 0, 0, 0, 0, 0, 0},
+									    {0, 0, 0, 0, 0, 0, 0, 0},
+									    {0, 0, 0, 0, 0, 0, 0, 0}};
+
+		assertArrayEquals(expectedFlowNetwork1, flowNetwork);
+		
+		int[][] expectedResGraph1 = {{0, 0, 1, 0, 0, 0, 0, 0},
+									 {1, 0, 0, 0, 0, 0, 0, 0},
+									 {0, 0, 0, 0, 0, 1, 0, 0},
+									 {0, 0, 0, 0, 0, 0, 1, 0},
+									 {0, 1, 0, 0, 0, 0, 0, 0},
+									 {0, 0, 0, 1, 0, 0, 0, 0},
+									 {0, 0, 0, 0, 0, 0, 0, 1},
+									 {0, 0, 0, 0, 1, 0, 0, 0}};
+		
+		assertArrayEquals(expectedResGraph1, resGraph);
+		
+		// Second test: path goes source to 2 to 5 to 3 to 6 to sink
+		Path p2 = new Path(resGraph, numNoms);
+		
+		p2.moveForward();
+		p2.moveForward();
+		p2.moveBackward();
+		p2.moveForward();
+		p2.moveForward();
+		
+		assertEquals(Path.Status.COMPLETE_PATH, p2.status);
+		
+		AssignmentMaker.updateGraphs(flowNetwork, resGraph, p2);
+		
+		int[][] expectedFlowNetwork2 = {{0, 1, 1, 0, 0, 0, 0, 0},
+								 	   	{0, 0, 0, 0, 1, 0, 0, 0},
+ 									    {0, 0, 0, 0, 0, 1, 0, 0},
+									    {0, 0, 0, 0, 0, 0, 1, 0},
+									    {0, 0, 0, 0, 0, 0, 0, 1},
+									    {0, 0, 0, 1, 0, 0, 0, 0},
+									    {0, 0, 0, 0, 0, 0, 0, 1},
+									    {0, 0, 0, 0, 0, 0, 0, 0}};
+
+		assertArrayEquals(expectedFlowNetwork2, flowNetwork);
+		
+		int[][] expectedResGraph2 = {{0, 0, 0, 0, 0, 0, 0, 0},
+									 {1, 0, 0, 0, 0, 0, 0, 0},
+									 {1, 0, 0, 0, 0, 0, 0, 0},
+									 {0, 0, 0, 0, 0, 1, 0, 0},
+									 {0, 1, 0, 0, 0, 0, 0, 0},
+									 {0, 0, 1, 0, 0, 0, 0, 0},
+									 {0, 0, 0, 1, 0, 0, 0, 0},
+									 {0, 0, 0, 0, 1, 0, 1, 0}};
+
+		assertArrayEquals(expectedResGraph2, resGraph);
+	}
+	
+	@Test
+	public void testIsPerfectMatching() {
+		//TODO Test isPerfectMatching method
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testGenerateAssignments() {
+		//TODO Test generateAssignments method
 		fail("Not yet implemented");
 	}
 }
