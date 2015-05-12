@@ -19,11 +19,15 @@ public class AssignmentMakerTest {
 	
 	@Test
 	public void testFindMaximumMatching() {
+		
+		//TODO Fix findMaximumMatching method
 
 		// First test: direct matching (1 to 1, 2 to 2, 3 to 3)
 		int[][] rankingMatrix1 = {{0, 1, 3},
 								  {1, 0, 2},
 								  {1, 1, 0}};
+		
+		int[][] adjMatrix1 = AssignmentMaker.generateAdjacencyMatrix(rankingMatrix1);
 		
 		int[][] expectedFN1 = {{0, 1, 1, 1, 0, 0, 0, 0},
 		 	   				   {0, 0, 0, 0, 1, 0, 0, 0},
@@ -34,12 +38,15 @@ public class AssignmentMakerTest {
 							   {0, 0, 0, 0, 0, 0, 0, 1},
 							   {0, 0, 0, 0, 0, 0, 0, 0}};
 		
-		assertArrayEquals(expectedFN1, AssignmentMaker.findMaximumMatching(rankingMatrix1));
+		assertArrayEquals(expectedFN1, AssignmentMaker.findMaximumMatching(
+															rankingMatrix1, adjMatrix1));
 		
 		// Second test: imperfect matching (1 to 1, 2 to 2)
 		int[][] rankingMatrix2 = {{0, 1, 3},
 								  {0, 0, 0},
 								  {0, 1, 2}};
+
+		int[][] adjMatrix2 = AssignmentMaker.generateAdjacencyMatrix(rankingMatrix2);
 		
 		int[][] expectedFN2 = {{0, 1, 1, 0, 0, 0, 0, 0},
 			 				   {0, 0, 0, 0, 1, 0, 0, 0},
@@ -50,7 +57,8 @@ public class AssignmentMakerTest {
 							   {0, 0, 0, 0, 0, 0, 0, 0},
 							   {0, 0, 0, 0, 0, 0, 0, 0}};
 
-		assertArrayEquals(expectedFN2, AssignmentMaker.findMaximumMatching(rankingMatrix2));
+		assertArrayEquals(expectedFN2, AssignmentMaker.findMaximumMatching(
+															rankingMatrix2, adjMatrix2));
 	}
 
 	@Test
@@ -228,14 +236,38 @@ public class AssignmentMakerTest {
 	}
 	
 	@Test
-	public void testIsPerfectMatching() {
-		//TODO Test isPerfectMatching method
+	public void testAdjustWeights() {
+		//TODO Test adjustWeights method
 		fail("Not yet implemented");
 	}
 	
 	@Test
-	public void testGenerateAssignments() {
-		//TODO Test generateAssignments method
+	public void testFindMinCover() {
+		//TODO Test findMinCover method
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testFindUnmatchedAwards() {
+		//TODO Test findUnmatchedAwards method
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testFindSetZ() {
+		//TODO Test findSetZ method
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testAddAlternating() {
+		//TODO Test addAlternating method
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testFindMatrixMin() {
+		//TODO Test findMatrixMin method
 		fail("Not yet implemented");
 	}
 }
