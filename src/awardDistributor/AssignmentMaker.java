@@ -3,6 +3,8 @@ package awardDistributor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 
@@ -293,12 +295,14 @@ public class AssignmentMaker {
 		DualHashBidiMap<Integer, Integer> biMatching =
 										new DualHashBidiMap<Integer, Integer> (matching);
 		
+		Iterator uVertices = ((HashSet<Integer>) u.clone()).iterator();
+		
 		// All vertices in U are in Z
 		HashSet<Integer> z = u;
 		
 		// Add vertices reachable from U via alternating paths
-		for (int v1 : z) {
-			addAlternating(v1, z, biMatching, adjMatrix);
+		while(uVertices.hasNext()) {
+			addAlternating((int) uVertices.next(), z, biMatching, adjMatrix);
 		}
 		
 		return z;
@@ -329,8 +333,8 @@ public class AssignmentMaker {
 			
 		} else if (v >= numNoms + 1 && v <= 2 * numNoms) {
 			// If v is a nominee vertex, look for an matched edge to an award vertex
-			if (matching.containsKey(v - awardOffset)) {
-				int v1 = matching.getKey(v - awardOffset);
+			if (matching.containsValue(v - nomOffset)) {
+				int v1 = matching.getKey(v - nomOffset) + awardOffset;
 				if (!z.contains(v1)) {
 					z.add(v1);
 					addAlternating(v1, z, matching, adjMatrix); // recursively continue the path
