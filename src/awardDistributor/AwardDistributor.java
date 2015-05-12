@@ -45,7 +45,44 @@ public class AwardDistributor {
 		
 		HashMap<Integer, Integer> assignments = AssignmentMaker.findOptimalAssignments(rankingMatrix);
 		
-		return null;
+		try {
+			HashMap<Award, String> pairings = parsePairings(assignments, awards, noms);
+			return pairings;
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException("Too much overlap of nominees for multiple awards");
+		}
+	}
+	
+	/**
+	 * Returns a HashMap that maps Awards to the Strings that correspond to each
+	 * nominee's name. If the algorithm has paired an award to a nominee which that
+	 * award did not have on their ranked list, the method throws an
+	 * IllegalArgumentException.
+	 * 
+	 * @param assignments A HashMap mapping award indices to nominee indices
+	 * @param awards An array of the awards
+	 * @param noms An array of the nominees
+	 * @return A HashMap that maps Awards to their chosen Strings (nominees)
+	 */
+	HashMap<Award, String> parsePairings(HashMap<Integer, Integer> assignments,
+												Award[] awards, ArrayList<String> noms) {
+		HashMap<Award, String> result = new HashMap<Award, String>();
+		
+		for (int a = 0; a < awards.length; a++) {
+			int nomIndex = assignments.get(a);
+			String nominee = noms.get(nomIndex);
+			Award award = awards[a];
+			
+			// If the nominee was not on the award's ranked list, throw an exception
+			if (!award.hasRanked(nominee)) {
+				throw new IllegalArgumentException("Award paired with unranked nominee");
+			}
+			
+			// Otherwise, add the pairing to the result
+			result.put(award, nominee);
+		}
+		
+		return result;
 	}
 
 	/**

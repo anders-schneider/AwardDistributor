@@ -7,10 +7,6 @@ import org.junit.Test;
 
 public class AwardTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
 	@Test
 	public void testAward() {
 		Award a1 = new Award("Noble Prize");
@@ -48,6 +44,12 @@ public class AwardTest {
 			a1.getRanking("Gina");
 			fail();
 		} catch (IllegalArgumentException e) {}
+	}
+	
+	@Test
+	public void testHasRanked() {
+		//TODO Test hasRanked method
+		fail("Not yet implemented");
 	}
 
 }

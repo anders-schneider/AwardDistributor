@@ -16,6 +16,7 @@ public class AwardDistributorTest {
 
 	@Test
 	public void testFindOptimalDistribution() {
+		//TODO Test findOptimalDistribution method
 		fail("Not yet implemented");
 	}
 
@@ -79,4 +80,9 @@ public class AwardDistributorTest {
 		assertArrayEquals(expected2, ad2.generateRankingMatrix(awards, noms));
 	}
 
+	@Test
+	public void testParsePairings() {
+		//TODO Test parsePairings method
+		fail("Not yet implemented");
+	}
 }

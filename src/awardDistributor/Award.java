@@ -70,6 +70,20 @@ public class Award {
 	}
 	
 	/**
+	 * Returns <code>true</code> if the award has the input nominee amongst
+	 * it ranked list of nominees, <code>false</code> otherwise.
+	 * 
+	 * @param nominee The name of the nominee to check into
+	 * @return A boolean indicating if 
+	 */
+	public boolean hasRanked(String nominee) {
+		for (int i = 0; i < noms.length; i++) {
+			if (nominee.equals(noms[i])) return true;
+		}
+		return false;
+	}
+	
+	/**
 	 * Returns the hashcode corresponding to this Award.
 	 * 
 	 * @return The hashcode corresponding to this Award.
