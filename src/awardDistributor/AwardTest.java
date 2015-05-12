@@ -47,9 +47,15 @@ public class AwardTest {
 	}
 	
 	@Test
-	public void testHasRanked() {
-		//TODO Test hasRanked method
-		fail("Not yet implemented");
+	public void testHasNom() {
+		Award a1 = new Award("Physics Award");
+		String[] noms1 = {"Arturo", "Mauricio", "Monica"};
+		a1.setNoms(noms1);
+		
+		assertTrue(a1.hasNom("Arturo"));
+		assertTrue(a1.hasNom("Mauricio"));
+		assertTrue(a1.hasNom("Monica"));
+		assertFalse(a1.hasNom("Jannet"));
 	}
 
 }

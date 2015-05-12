@@ -76,7 +76,7 @@ public class Award {
 	 * @param nominee The name of the nominee to check into
 	 * @return A boolean indicating if 
 	 */
-	public boolean hasRanked(String nominee) {
+	public boolean hasNom(String nominee) {
 		for (int i = 0; i < noms.length; i++) {
 			if (nominee.equals(noms[i])) return true;
 		}
