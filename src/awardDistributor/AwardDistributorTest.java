@@ -17,12 +17,104 @@ public class AwardDistributorTest {
 
 	@Test
 	public void testFindOptimalDistribution() {
-		//TODO Test findOptimalDistribution method
-		fail("Not yet implemented");
+		Award.resetIndex();
+		
+		AwardDistributor ad = new AwardDistributor(2);
+		
+		// Test #1: Straightforward
+		Award phys = new Award("Physics");
+		Award math = new Award("Math");
+		
+		ArrayList<String> noms = new ArrayList<String>();
+		
+		String s1 = "s1";
+		noms.add(s1);
+		String s2 = "s2";
+		noms.add(s2);
+		String s3 = "s3";
+		noms.add(s3);
+		String s4 = "s4";
+		noms.add(s4);
+		
+		String[] physNoms1 = {s1, s2};
+		phys.setNoms(physNoms1);
+		String[] mathNoms1 = {s3, s4};
+		math.setNoms(mathNoms1);
+		
+		Award[] awards1 = {phys, math};
+		
+		HashMap<Award, String> expected1 = new HashMap<Award, String>();
+		expected1.put(phys, s1);
+		expected1.put(math, s3);
+		
+		assertEquals(expected1, ad.findOptimalDistribution(awards1, noms));
+		
+		// Test #2: Overlapping rankings
+		String[] physNoms2 = {s1, s2};
+		phys.setNoms(physNoms2);
+		String[] mathNoms2 = {s1, s2};
+		math.setNoms(mathNoms2);
+		
+		Award[] awards2 = awards1;
+		
+		HashMap<Award, String> expected2 = new HashMap<Award, String>();
+		expected2.put(math, s1);
+		expected2.put(phys, s2);
+		
+		assertEquals(expected2, ad.findOptimalDistribution(awards2, noms));
+		
+		// Test #3: Too many overlapping rankings
+		Award history = new Award("History");
+		String[] histNoms3 = {s1, s2};
+		history.setNoms(histNoms3);
+		
+		Award[] awards3 = {phys, math, history};
+		
+		try{
+			ad.findOptimalDistribution(awards3, noms);
+			fail();
+		} catch (IllegalArgumentException e) {}
+		
+		// Test #4: More teachers than noms
+		noms.remove(3);
+		noms.remove(2);
+		
+		Award[] awards4 = awards3;
+		
+		try {
+			ad.findOptimalDistribution(awards4, noms);
+			fail();
+		} catch (IllegalArgumentException e) {}
+		
+		// Test #5: More complicated pairings
+		AwardDistributor ad2 = new AwardDistributor(3);
+		
+		String[] physNoms5 = {s1, s2, s3};
+		phys.setNoms(physNoms5);
+		
+		String[] mathNoms5 = {s2, s4, s1};
+		math.setNoms(mathNoms5);
+		
+		String[] histNoms5 = {s1, s2, s3};
+		history.setNoms(histNoms5);
+		
+		noms.add(s3);
+		noms.add(s4);
+		
+		Award[] awards5 = awards4;
+		
+		HashMap<Award, String> expected5 = new HashMap<Award, String>();
+		expected5.put(math, s4);
+		expected5.put(history, s1);
+		expected5.put(phys, s2);
+		
+		assertEquals(expected5, ad2.findOptimalDistribution(awards5, noms));
 	}
 
 	@Test
 	public void testGenerateRankingMatrix() {
+		Award.resetIndex();
+		
 		AwardDistributor ad1 = new AwardDistributor(2);
 		Award a1 = new Award("Physics Mav");
 		Award a2 = new Award("Physics Climber");
@@ -81,6 +173,8 @@ public class AwardDistributorTest {
 
 	@Test
 	public void testParsePairings() {
+		Award.resetIndex();
+		
 		AwardDistributor ad1 = new AwardDistributor(2);
 		Award a1 = new Award("Physics Mav");
 		Award a2 = new Award("Physics Climber");

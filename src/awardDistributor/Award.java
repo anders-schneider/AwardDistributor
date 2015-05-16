@@ -12,7 +12,7 @@ public class Award {
 	
 	private static int numAwards = 0; // total number of awards created
 	
-	private String name;
+	String name;
 	private int index;
 	private String[] noms;
 	
@@ -38,11 +38,28 @@ public class Award {
 	}
 	
 	/**
+	 * Resets the number of awards to be 0 so that subsequent awards have
+	 * indices 0, 1, 2, etc. (For testing purposes only.)
+	 */
+	public static void resetIndex() {
+		numAwards = 0;
+	}
+	
+	/**
 	 * Sets the <code>noms</code> instance variable for this Award.
 	 * 
 	 * @param noms An ordered array of the nominees for this award
 	 */
 	public void setNoms(String[] noms) {
+		
+		for (int i = 0; i < noms.length; i++) {
+			String s1 = noms[i];
+			for (int j = i + 1; j < noms.length; j++) {
+				String s2 = noms[j];
+				if (s1.equals(s2)) throw new IllegalArgumentException("Same student ranked twice");
+			}
+		}
+		
 		this.noms = noms;
 	}
 	

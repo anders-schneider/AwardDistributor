@@ -57,5 +57,16 @@ public class AwardTest {
 		assertTrue(a1.hasNom("Monica"));
 		assertFalse(a1.hasNom("Jannet"));
 	}
+	
+	@Test
+	public void testSetNoms() {
+		Award a1 = new Award("Physics Award");
+		String[] noms1 = {"Arturo", "Mauricio", "Arturo"};
+		
+		try {
+			a1.setNoms(noms1);
+			fail();
+		} catch (IllegalArgumentException e) {}
+	}
 
 }

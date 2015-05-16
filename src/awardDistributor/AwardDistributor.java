@@ -75,6 +75,7 @@ public class AwardDistributor {
 			
 			// If the nominee was not on the award's ranked list, throw an exception
 			if (!award.hasNom(nominee)) {
+				System.out.println(award.name + " " + nominee);
 				throw new IllegalArgumentException("Award paired with unranked nominee");
 			}
 			
