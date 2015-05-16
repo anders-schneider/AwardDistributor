@@ -1,7 +1,6 @@
 # AwardDistributor
 
-Independent Project (inspired by work as a teacher
-)
+Independent Project (inspired by work as a teacher)
 
 This program takes in ranked lists of award nominations and determines the optimal distribution of awards amongs the nominees under the constraint that no nominee may be selected for more than one award. Underneath the covers, the program accomplishes this by solving the bipartite-graph matching problem using the Hungarian Algorithm. This entails using a variation of the Ford-Fulkerson max-flow algorithm as well as Konig's theorem to find a minimum vertex cover (reference links that I used are included at the bottom of this document). This algorithm gives a time complexity of O(n^4), a dramatic improvement over the factorial time complexity I first encountered with this project. Furthermore, the algorithm is guaranteed to find an optimal solution, if one exists. If multiple optimal solutions exist, the program selects one of them arbitrarily.
 
